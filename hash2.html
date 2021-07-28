@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hash route-进阶版</title>
+
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    div.router-wrap {
+      width: 100px;
+      height: 500px;
+      background: #fefefe;
+    }
+    a {
+      padding: 10px;  
+      color: pink;
+      font-size: 25px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="router-wrap">
+    <a href="#/black">黑色</a><br />
+    <a href="#/green">绿色</a><br />
+    <a href="#/red">红色</a>
+  </div>
+  <script>
+    function Router(){
+      this.currentHash = '#/',
+      this.routes = {}
+    }
+
+    Router.prototype.route = function (path , callback){
+      this.routes[path] = callback || function(){
+        console.log('为定义回调函数');
+      }
+    }
+
+    Router.prototype.refresh = function(path){
+      this.currentHash = location.hash.slice(1) || '/';
+      this.routes[this.currentHash]();
+    }
+
+    Router.prototype.init = function(){
+      self = this;
+      window.addEventListener('load', function(){
+        self.refresh();
+      })
+
+      // 路由的返回，更新等操作都会经过hashchange
+      window.addEventListener('hashchange', function(){
+        if(self.currentHash !== (location.hash.slice(1) || '/')){
+          self.refresh();
+        }
+      })
+    }
+  </script>
+  <script>
+    var wrap = document.querySelector('.router-wrap');
+    window.Router = new Router();
+    // 注册路由
+    Router.route('/', function(){
+      wrap.style.backgroundColor = '#fefefe';
+    })
+    Router.route('/black', function(){
+      wrap.style.backgroundColor = 'black';
+    })
+    Router.route('/green', function(){
+      wrap.style.backgroundColor = 'green';
+    })
+    Router.route('/red', function(){
+      wrap.style.backgroundColor = 'red';
+    })
+
+    Router.init();
+  </script>
+</body>
+</html>

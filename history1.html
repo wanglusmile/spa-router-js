@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>history router - 简单版</title>
+</head>
+
+<body>
+  <div>
+    <a data-path='index'>home</a>
+    <a data-path='news'>news</a>
+    <a data-path='about'>about us</a>
+    <div id='root'>
+
+    </div>
+  </div>
+  <script>
+    let root = document.getElementById('root');
+    let aList = document.getElementsByTagName('a');
+
+    let routers = [
+      { path: 'index', component: '首页' },
+      { path: 'news', component: '新闻' },
+      { path: 'about', component: '关于我们' }
+    ];
+
+    function refresh(path) {
+      routers.map((item) => {
+        if (item.path === path) {
+          root.innerText = item.component;
+        }
+      });
+    }
+
+    for (var i = 0; i < aList.length; i++) {
+      aList[i].addEventListener('click', function () {
+        var path = this["attributes"]["data-path"].value;
+        history.pushState({}, '', path);
+        refresh(path);
+      })
+    }
+
+    window.addEventListener('popstate', function () {
+      refresh(location.pathname);
+    });
+
+    window.addEventListener('load', function () {
+      history.replaceState({}, '', location.pathname);
+      refresh(location.pathname);
+    });
+
+  </script>
+</body>
+
+</html>
